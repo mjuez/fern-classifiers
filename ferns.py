@@ -108,7 +108,7 @@ class FernClassifier(BaseEstimator, ClassifierMixin):
             
         leafs = self._populate_leafs(X, y)
 
-        self.leafs_proba = self._estimate_probabilities(leafs, bal_term)
+        self.leafs_proba = self._estimate_probabilities(leafs)
 
         return self
 
