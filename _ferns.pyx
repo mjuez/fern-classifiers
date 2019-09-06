@@ -28,8 +28,11 @@ cimport numpy as np
 import numpy as np
 
 np.import_array()
+ctypedef fused numeric:
+    double
+    long
 
-cpdef int c_comp_leaf(double[:] inst, long[:] rnd_features, 
+cpdef int c_comp_leaf(numeric[:] inst, long[:] rnd_features, 
     double[:] rnd_thresholds, int depth):
     """
     Computes the leaf index of the fern where given instance falls in.
@@ -74,7 +77,7 @@ cpdef int c_comp_proj_leaf(double[:] inst, double[:] rnd_thresholds,
             leaf += 2 ** d
     return leaf
 
-cpdef np.ndarray[long, ndim=2] c_populate_leafs(double[:,:] X, np.ndarray y, 
+cpdef np.ndarray[long, ndim=2] c_populate_leafs(numeric[:,:] X, np.ndarray y, 
     long n_classes, long n_instances, long[:] rnd_features, 
     double[:] rnd_thresholds, int depth):
     """
