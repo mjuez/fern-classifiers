@@ -27,6 +27,8 @@
 cimport numpy as np
 import numpy as np
 
+np.import_array()
+
 cpdef int c_comp_leaf(double[:] inst, long[:] rnd_features, 
     double[:] rnd_thresholds, int depth):
     """

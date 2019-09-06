@@ -1,11 +1,13 @@
 from setuptools import setup, find_packages
 from setuptools.extension import Extension
 from Cython.Build import cythonize
+import numpy
 
 extensions = [
     Extension(
         "_ferns",
-        ["_ferns.pyx"]
+        ["_ferns.pyx"],
+	include_dirs=[numpy.get_include()]
     ),
 ]
 
