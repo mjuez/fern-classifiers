@@ -50,6 +50,28 @@ cpdef int c_comp_leaf(double[:] inst, long[:] rnd_features,
             leaf += 2 ** d
     return leaf
 
+cpdef int c_comp_proj_leaf(double[:] inst, double[:] rnd_thresholds, 
+    int depth):
+    """
+    Computes the leaf index of the fern where given instance falls in.
+
+    Parameters
+    ----------
+    inst : given instance. An instance is an array of features (float values).
+    rnd_thresholds : an array of random thresholds for making the decisions.
+    depth : fern depth.
+
+    Returns
+    -------
+    leaf : leaf index where given instance falls in.
+    """
+
+    cdef int leaf = 0
+    for d in range(depth):
+        if inst[d] >= rnd_thresholds[d]:
+            leaf += 2 ** d
+    return leaf
+
 cpdef np.ndarray[long, ndim=2] c_populate_leafs(double[:,:] X, np.ndarray y, 
     long n_classes, long n_instances, long[:] rnd_features, 
     double[:] rnd_thresholds, int depth):
@@ -80,5 +102,37 @@ cpdef np.ndarray[long, ndim=2] c_populate_leafs(double[:,:] X, np.ndarray y,
                                                     dtype=np.int)
     for i in range(n_instances):
         leaf = c_comp_leaf(X[i], rnd_features, rnd_thresholds, depth)
+        leafs[leaf][y[i]] = leafs[leaf][y[i]] + 1
+    return leafs
+
+cpdef np.ndarray[long, ndim=2] c_populate_proj_leafs(double[:,:] X, 
+    np.ndarray y, long n_classes, long n_instances, double[:] rnd_thresholds, 
+    int depth):
+    """
+    Populates fern leafs using a set of training instances. The population
+    process consists in counting the number of instances of each class that
+    falls in each leaf. The counts are stored in a matrix of integers with
+    2^depth (leafs) rows and and number of classes columns.
+
+    Parameters
+    ----------
+    X : the set of training instances.
+    y : target values, are the class of each instance.
+    n_classes : number of different classes.
+    n_instances : number of instances.
+    rnd_thresholds : an array of random thresholds for making the decisions.
+    depth : fern depth.
+
+    Returns
+    -------
+    leafs : a matrix containing the number of examples of each class in each
+            leaf of the fern.
+    """
+
+    cdef int n_leafs = 2 ** depth
+    cdef np.ndarray[long, ndim=2] leafs = np.zeros([n_leafs, n_classes], 
+                                                    dtype=np.int)
+    for i in range(n_instances):
+        leaf = c_comp_proj_leaf(X[i], rnd_thresholds, depth)
         leafs[leaf][y[i]] = leafs[leaf][y[i]] + 1
     return leafs
