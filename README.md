@@ -63,7 +63,7 @@ Licensed under the [GNU GPLv3](https://opensource.org/licenses/GPL-3.0), please 
 
 ---
 
-## Acknowledgments
+## Acknowledgements
 
 This work was partially supported by the Consejería de Educación of the 
 Junta de Castilla y León and by the European Social Fund with the 
