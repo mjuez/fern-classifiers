@@ -29,7 +29,7 @@ from sklearn.utils.validation import check_is_fitted
 from sklearn.utils.multiclass import check_classification_targets
 from sklearn.base import BaseEstimator, ClassifierMixin
 from ._ferns import c_comp_leaf, c_populate_leafs
-from ._ferns import c_comp_proj_leaf, c_populate_proj_leafs
+from ._ferns import c_comp_proj_leaf, c_populate_proj_leafs, c_comp_projs
 
 __author__ = "Mario Juez-Gil"
 __copyright__ = "Copyright 2019, Mario Juez-Gil"
@@ -480,8 +480,8 @@ class ProjectionFernClassifier(BaseEstimator, ClassifierMixin):
         -------
         projected_training_set : array of shape (num_instances, depth)
         """
-        return np.squeeze(np.array([X[:,self.rnd_features[i]] @ \
-            self.rnd_proj[:,i,np.newaxis] for i in range(self.depth)])).T
+        return c_comp_projs(X, self.rnd_features, self.rnd_proj, 
+                            X.shape[0], self.depth)
 
     def _compute_thresholds(self, X, random_state):
         """

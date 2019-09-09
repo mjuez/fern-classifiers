@@ -50,6 +50,7 @@ cpdef int c_comp_leaf(numeric[:] inst, long[:] rnd_features,
     """
     
     cdef int leaf = 0
+    cdef int d
     for d in range(depth):
         if inst[rnd_features[d]] >= rnd_thresholds[d]:
             leaf += 2 ** d
@@ -72,6 +73,7 @@ cpdef int c_comp_proj_leaf(double[:] inst, double[:] rnd_thresholds,
     """
     
     cdef int leaf = 0
+    cdef int d
     for d in range(depth):
         if inst[d] >= rnd_thresholds[d]:
             leaf += 2 ** d
@@ -105,6 +107,7 @@ cpdef np.ndarray[long, ndim=2] c_populate_leafs(numeric[:,:] X, np.ndarray y,
     cdef int n_leafs = 2 ** depth
     cdef np.ndarray[long, ndim=2] leafs = np.zeros([n_leafs, n_classes], 
                                                     dtype=np.int)
+    cdef int i
     for i in range(n_instances):
         leaf = c_comp_leaf(X[i], rnd_features, rnd_thresholds, depth)
         leafs[leaf][y[i]] = leafs[leaf][y[i]] + 1
@@ -137,7 +140,38 @@ cpdef np.ndarray[long, ndim=2] c_populate_proj_leafs(double[:,:] X,
     cdef int n_leafs = 2 ** depth
     cdef np.ndarray[long, ndim=2] leafs = np.zeros([n_leafs, n_classes], 
                                                     dtype=np.int)
+    cdef int i
     for i in range(n_instances):
         leaf = c_comp_proj_leaf(X[i], rnd_thresholds, depth)
         leafs[leaf][y[i]] = leafs[leaf][y[i]] + 1
     return leafs
+
+cpdef np.ndarray[double, ndim=2] c_comp_projs(numeric[:,:] X, 
+    long[:,:] rnd_features, double[:,:] rnd_proj, long n_instances, int depth):
+    """
+    Computes the random projections of each instance given a set of features
+    for each depth level. The resulting matrix will have n_instances rows and
+    depth columns. The first column will be the projection for the first depth
+    level, and so on.
+
+    Parameters
+    ----------
+    X : the set of instances
+    rnd_features : a matrix of random feature indexes of size the fern depth.
+    rnd_proj : a matrix of random projections where to project each instance.
+    n_instances : the number of instances to project.
+    depth : fern depth.
+
+    Returns
+    -------
+    projs : a matrix containing the projections of the instances.
+    """
+    
+    cdef np.ndarray[double, ndim=2] projs = np.zeros([n_instances, depth],  
+                                                        dtype=np.float)
+    cdef int d, i, f
+    for d in range(depth):
+        for i in range(n_instances):
+            for f in range(len(rnd_features[d])):
+                projs[i, d] += X[i, rnd_features[d, f]] * rnd_proj[d, f]
+    return projs
