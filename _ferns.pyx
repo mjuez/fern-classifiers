@@ -48,7 +48,7 @@ cpdef int c_comp_leaf(numeric[:] inst, long[:] rnd_features,
     -------
     leaf : leaf index where given instance falls in.
     """
-
+    
     cdef int leaf = 0
     for d in range(depth):
         if inst[rnd_features[d]] >= rnd_thresholds[d]:
@@ -70,7 +70,7 @@ cpdef int c_comp_proj_leaf(double[:] inst, double[:] rnd_thresholds,
     -------
     leaf : leaf index where given instance falls in.
     """
-
+    
     cdef int leaf = 0
     for d in range(depth):
         if inst[d] >= rnd_thresholds[d]:

@@ -248,12 +248,12 @@ class FernClassifier(BaseEstimator, ClassifierMixin):
         leafs_proba : a matrix containing all probabilities for each leaf of 
             the fern.
         """
-        _bal_nume = (self.class_counts + 1)
-        _bal_deno = ((self.num_instances + self.n_classes_))
+        _bal_nume = ((self.num_instances + self.n_classes_))
+        _bal_deno = (self.class_counts + 1)
         bal_term = _bal_nume / _bal_deno
 
         denominator = (np.sum(leafs, axis=1) + self.n_classes_)
-        return ((leafs + 1) / denominator[:, np.newaxis]) * bal_term
+        return np.log(((leafs + 1) / denominator[:, np.newaxis]) * bal_term)
 
     def _compute_leaf(self, inst):
         """
@@ -521,12 +521,12 @@ class ProjectionFernClassifier(BaseEstimator, ClassifierMixin):
         leafs_proba : a matrix containing all probabilities for each leaf of 
             the fern.
         """
-        _bal_nume = (self.class_counts + 1)
-        _bal_deno = ((self.num_instances + self.n_classes_))
+        _bal_nume = ((self.num_instances + self.n_classes_))
+        _bal_deno = (self.class_counts + 1)
         bal_term = _bal_nume / _bal_deno
 
         denominator = (np.sum(leafs, axis=1) + self.n_classes_)
-        return ((leafs + 1) / denominator[:, np.newaxis]) * bal_term
+        return np.log(((leafs + 1) / denominator[:, np.newaxis]) * bal_term)
 
     def _compute_leaf(self, inst):
         """
