@@ -107,7 +107,7 @@ cpdef np.ndarray[long, ndim=2] c_populate_leafs(numeric[:,:] X, np.ndarray y,
 
     cdef int n_leafs = <int>2 ** depth
     cdef np.ndarray[long, ndim=2] leafs = np.zeros([n_leafs, n_classes], 
-                                                    dtype=np.int)
+                                                    dtype=np.int64)
     cdef int i
     for i in range(n_instances):
         leaf = c_comp_leaf(X[i], rnd_features, rnd_thresholds, depth)
@@ -140,7 +140,7 @@ cpdef np.ndarray[long, ndim=2] c_populate_proj_leafs(double[:,:] X,
 
     cdef int n_leafs = <int>2 ** depth
     cdef np.ndarray[long, ndim=2] leafs = np.zeros([n_leafs, n_classes], 
-                                                    dtype=np.int)
+                                                    dtype=np.int64)
     cdef int i
     for i in range(n_instances):
         leaf = c_comp_proj_leaf(X[i], rnd_thresholds, depth)
