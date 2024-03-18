@@ -6,7 +6,7 @@ import numpy
 extensions = [
     Extension(
         "_ferns",
-        ["_ferns.pyx"],
+        ["fc/_ferns.pyx"],
 	include_dirs=[numpy.get_include()]
     ),
 ]

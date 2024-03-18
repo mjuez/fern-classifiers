@@ -28,8 +28,8 @@ from sklearn.utils import check_random_state
 from sklearn.utils.validation import check_is_fitted
 from sklearn.utils.multiclass import check_classification_targets
 from sklearn.base import BaseEstimator, ClassifierMixin
-from ._ferns import c_comp_leaf, c_populate_leafs
-from ._ferns import c_comp_proj_leaf, c_populate_proj_leafs, c_comp_projs
+from _ferns import c_comp_leaf, c_populate_leafs
+from _ferns import c_comp_proj_leaf, c_populate_proj_leafs, c_comp_projs
 
 __author__ = "Mario Juez-Gil"
 __copyright__ = "Copyright 2019, Mario Juez-Gil"
@@ -198,14 +198,14 @@ class FernClassifier(BaseEstimator, ClassifierMixin):
 
         self.n_outputs_ = y.shape[1]
 
-        y_encoded = np.zeros(y.shape, dtype=np.int)
+        y_encoded = np.zeros(y.shape, dtype=np.int64)
         for k in range(self.n_outputs_):
             classes_k, y_encoded[:, k], self.class_counts = np.unique(
                 y[:, k], return_inverse=True, return_counts=True)
             self.classes_.append(classes_k)
             self.n_classes_.append(classes_k.shape[0])
 
-        self.n_classes_ = np.array(self.n_classes_, dtype=np.intp)
+        self.n_classes_ = np.array(self.n_classes_, dtype=np.int64)
 
         return y_encoded
 
@@ -455,14 +455,14 @@ class ProjectionFernClassifier(BaseEstimator, ClassifierMixin):
 
         self.n_outputs_ = y.shape[1]
 
-        y_encoded = np.zeros(y.shape, dtype=np.int)
+        y_encoded = np.zeros(y.shape, dtype=np.int64)
         for k in range(self.n_outputs_):
             classes_k, y_encoded[:, k], self.class_counts = np.unique(
                 y[:, k], return_inverse=True, return_counts=True)
             self.classes_.append(classes_k)
             self.n_classes_.append(classes_k.shape[0])
 
-        self.n_classes_ = np.array(self.n_classes_, dtype=np.intp)
+        self.n_classes_ = np.array(self.n_classes_, dtype=np.int64)
 
         return y_encoded
 

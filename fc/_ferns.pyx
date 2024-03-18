@@ -1,4 +1,5 @@
 # cython: boundscheck=False
+# cython: language_level=2
 
 # Copyright (C) 2019  Mario Juez-Gil <mariojg@ubu.es>
 # 
@@ -53,7 +54,7 @@ cpdef int c_comp_leaf(numeric[:] inst, long[:] rnd_features,
     cdef int d
     for d in range(depth):
         if inst[rnd_features[d]] >= rnd_thresholds[d]:
-            leaf += 2 ** d
+            leaf += <int>2 ** d
     return leaf
 
 cpdef int c_comp_proj_leaf(double[:] inst, double[:] rnd_thresholds, 
@@ -76,7 +77,7 @@ cpdef int c_comp_proj_leaf(double[:] inst, double[:] rnd_thresholds,
     cdef int d
     for d in range(depth):
         if inst[d] >= rnd_thresholds[d]:
-            leaf += 2 ** d
+            leaf += <int>2 ** d
     return leaf
 
 cpdef np.ndarray[long, ndim=2] c_populate_leafs(numeric[:,:] X, np.ndarray y, 
@@ -104,9 +105,9 @@ cpdef np.ndarray[long, ndim=2] c_populate_leafs(numeric[:,:] X, np.ndarray y,
             leaf of the fern.
     """
 
-    cdef int n_leafs = 2 ** depth
+    cdef int n_leafs = <int>2 ** depth
     cdef np.ndarray[long, ndim=2] leafs = np.zeros([n_leafs, n_classes], 
-                                                    dtype=np.int)
+                                                    dtype=np.int64)
     cdef int i
     for i in range(n_instances):
         leaf = c_comp_leaf(X[i], rnd_features, rnd_thresholds, depth)
@@ -137,9 +138,9 @@ cpdef np.ndarray[long, ndim=2] c_populate_proj_leafs(double[:,:] X,
             leaf of the fern.
     """
 
-    cdef int n_leafs = 2 ** depth
+    cdef int n_leafs = <int>2 ** depth
     cdef np.ndarray[long, ndim=2] leafs = np.zeros([n_leafs, n_classes], 
-                                                    dtype=np.int)
+                                                    dtype=np.int64)
     cdef int i
     for i in range(n_instances):
         leaf = c_comp_proj_leaf(X[i], rnd_thresholds, depth)
